@@ -1,0 +1,18 @@
+# Base docker-compose configuration
+# For local development, copy docker-compose.override.yml.example to docker-compose.override.yml
+# and configure your passwords there
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      # Password should be set in docker-compose.override.yml (gitignored)
+      # MSSQL_SA_PASSWORD: "YourPasswordHere"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+    platform: "linux/amd64"
+volumes:
+  sql-data:

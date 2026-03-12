@@ -1,0 +1,18 @@
+# Copy this file to docker-compose.override.yml and update with your values
+# docker-compose.override.yml is gitignored for security
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      # Change this password! Use a strong password in production
+      MSSQL_SA_PASSWORD: "YourStrongPassword123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+    platform: "linux/amd64"
+
+volumes:
+  sql-data:
