@@ -79,7 +79,7 @@ app.Use(async (context, next) =>
         "style-src 'self' 'unsafe-inline'; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' data:; " +
-        "connect-src 'self' https://api.github.com https://github.com wss: ws:;");
+        "connect-src 'self' blob: https://api.github.com https://github.com https://res.cloudinary.com wss: ws:;");
     await next();
 });
 
