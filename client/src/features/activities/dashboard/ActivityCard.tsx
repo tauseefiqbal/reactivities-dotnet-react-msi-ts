@@ -28,12 +28,6 @@ export default function ActivityCard({ activity }: Props) {
                             fontSize: 20
                         }
                     }}
-                    subheader={
-                        <>
-                            Hosted by{' '}
-                            <Link to={`/profiles/${activity.hostId}`}>{activity.hostDisplayName}</Link>
-                        </>
-                    }
                 />
                 <Box display='flex' flexDirection='column' gap={2} mr={2}>
                     {(activity.isHost || activity.isGoing) && <Chip label={label} variant="outlined" color={color} sx={{ borderRadius: 2 }} />}
