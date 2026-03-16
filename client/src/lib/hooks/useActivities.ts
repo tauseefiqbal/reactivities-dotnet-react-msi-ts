@@ -132,7 +132,7 @@ export const useActivities = (id?: string) => {
 
             return { prevActivity };
         },
-        onError: (error, activityId, context) => {
+        onError: (_error, activityId, context) => {
             if (context?.prevActivity) {
                 queryClient.setQueryData(['activities', activityId], context.prevActivity);
             }

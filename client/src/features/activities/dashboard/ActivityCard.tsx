@@ -22,6 +22,11 @@ export default function ActivityCard({ activity }: Props) {
                         alt='Image of host'
                     />}
                     title={activity.title}
+                    subheader={
+                        <Typography variant="body2" color="text.secondary">
+                            Hosted by <Link to={`/profiles/${activity.hostId}`} style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}>{activity.hostDisplayName}</Link>
+                        </Typography>
+                    }
                     slotProps={{
                         title: {
                             fontWeight: 'bold',
