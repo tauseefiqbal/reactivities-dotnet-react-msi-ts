@@ -491,6 +491,3 @@ API/appsettings.Production.json
 
 # Keep example files
 !API/appsettings.example.json
-
-# Docker compose override files
-docker-compose.override.yml

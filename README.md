@@ -42,7 +42,7 @@ This application follows **Clean Architecture** principles with clear separation
 
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download)
 - [Node.js 18+](https://nodejs.org/) 
-- [SQL Server](https://www.microsoft.com/sql-server) or [Docker](https://www.docker.com/)
+- [SQL Server](https://www.microsoft.com/sql-server)
 - [Git](https://git-scm.com/)
 
 ## 🛠️ Setup Instructions
@@ -55,19 +55,6 @@ cd reactivities
 ```
 
 ### 2. Database Setup
-
-#### Option A: Using Docker (Recommended)
-
-```bash
-# Copy the example override file
-cp docker-compose.override.yml.example docker-compose.override.yml
-
-# Edit docker-compose.override.yml and set a strong password
-# Then start SQL Server
-docker-compose up -d
-```
-
-#### Option B: Local SQL Server
 
 Ensure SQL Server is running locally on port 1433.
 
@@ -160,18 +147,13 @@ npm test
 
 ### Starting the Application
 
-1. **Start Database** (if using Docker):
-   ```bash
-   docker-compose up -d
-   ```
-
-2. **Start Backend** (in one terminal):
+1. **Start Backend** (in one terminal):
    ```bash
    cd API
    dotnet run
    ```
 
-3. **Start Frontend** (in another terminal):
+2. **Start Frontend** (in another terminal):
    ```bash
    cd client
    npm run dev
@@ -203,7 +185,6 @@ The built files will be in `client/dist` and are served by the API in production
 ## 🔐 Security Notes
 
 - **Never commit** `appsettings.Development.json` or `appsettings.Production.json` with real secrets
-- **Never commit** `docker-compose.override.yml` with real passwords
 - Use **strong passwords** for SQL Server in production
 - Configure **CORS** appropriately for your production domain
 - Enable **HTTPS** in production
