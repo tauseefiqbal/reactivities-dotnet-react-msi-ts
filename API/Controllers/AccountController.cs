@@ -121,7 +121,8 @@ public class AccountController(SignInManager<User> signInManager,
         {
             UserName = registerDto.Email,
             Email = registerDto.Email,
-            DisplayName = registerDto.DisplayName
+            DisplayName = registerDto.DisplayName,
+            EmailConfirmed = true
         };
 
         var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);

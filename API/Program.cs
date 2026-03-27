@@ -6,6 +6,7 @@ using Application.Core;
 using Application.Interfaces;
 using Domain;
 using FluentValidation;
+using Infrastructure.Email;
 using Infrastructure.Photos;
 using Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
@@ -50,6 +51,7 @@ builder.Services.AddIdentityApiEndpoints<User>(opt =>
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddTransient<IEmailSender<User>, ResendEmailSender>();
 builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("IsActivityHost", policy =>
