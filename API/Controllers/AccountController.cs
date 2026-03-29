@@ -39,12 +39,12 @@ public class AccountController(SignInManager<User> signInManager,
         );
 
         if (!tokenResponse.IsSuccessStatusCode)
-            return BadRequest("Failed to get access token");
+            return BadRequest("Failed to get access token from GitHub");
 
         var tokenContent = await tokenResponse.Content.ReadFromJsonAsync<GitHubTokenResponse>();
 
         if (string.IsNullOrEmpty(tokenContent?.AccessToken))
-            return BadRequest("Failed to retrieve access token");
+            return BadRequest("Failed to retrieve access token from GitHub");
 
         // step 2 - fetch user info from GitHub
         httpClient.DefaultRequestHeaders.Authorization =

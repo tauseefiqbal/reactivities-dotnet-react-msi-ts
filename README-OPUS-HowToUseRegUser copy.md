@@ -145,15 +145,18 @@ A full-stack social activity-management web application built with **ASP.NET Cor
 
 The application is deployed and available at:
 
-> **https://jobify-mern-jwt-sc-js-bzr7.onrender.com/**
+> **https://reactivities-wa.azurewebsites.net**
 
 | Component | Details |
 |---|---|
-| **Live URL** | https://jobify-mern-jwt-sc-js-bzr7.onrender.com/ |
+| **Platform** | Azure App Service |
+| **Live URL** | https://reactivities-wa.azurewebsites.net |
 | **Backend** | ASP.NET Core 9 — serves the API and the compiled React SPA |
-| **Database** | SQL Server |
+| **Database** | SQL Server (Azure SQL) |
 | **Photo Storage** | Cloudinary |
-| **Email** | Resend |
+| **Email** | Resend (`Resend__ApiKey` / `Resend__FromEmail` environment variables) |
+
+> **Azure config note:** Use double-underscore syntax for nested keys in environment variables (e.g. `Cloudinary__ApiKey`, `Resend__ApiKey`).
 
 ---
 
@@ -183,7 +186,7 @@ This application does not currently have a separate admin role. All authenticate
 
 ### Getting Started
 
-1. Open the application — use the [live deployment](https://jobify-mern-jwt-sc-js-bzr7.onrender.com/) or the local dev server (default: `https://localhost:5173`).
+1. Open the application — use the [live deployment](https://reactivities-wa.azurewebsites.net) or the local dev server (default: `https://localhost:5173`).
 2. Click **Login** in the nav bar and sign in with one of the test credentials above, or click **Register** to create a new account.
 3. To sign in with GitHub, click the **GitHub** button on the login page.
 4. After logging in you are taken to the **Activity Dashboard**.
@@ -205,7 +208,7 @@ This application does not currently have a separate admin role. All authenticate
 ### Attending an Activity
 
 1. Open any activity's detail page.
-2. Click **Join Activity** to sign up as an attendee; your avatar appears in the attendee list immediately.     
+2. Click **Join Activity** to sign up as an attendee; your avatar appears in the attendee list immediately.
 3. Click **Cancel attendance** to remove yourself from the activity.
 4. If you are the host, click **Cancel Activity** to mark it cancelled (it stays visible but greyed out), or **Re-activate** to open it again.
 
@@ -341,7 +344,7 @@ The dev server starts on `https://localhost:5173` (HTTPS via `vite-plugin-mkcert
 
 | Key | Description | Required |
 |---|---|---|
-| `ConnectionStrings:DefaultConnection` | SQL Server connection string | Yes |
+| `ConnectionStrings:DefaultConnection` | SQL Server connection string | ✅ Yes |
 | `Cloudinary:CloudName` | Cloudinary cloud name | Photo upload only |
 | `Cloudinary:ApiKey` | Cloudinary API key | Photo upload only |
 | `Cloudinary:ApiSecret` | Cloudinary API secret | Photo upload only |
@@ -350,6 +353,8 @@ The dev server starts on `https://localhost:5173` (HTTPS via `vite-plugin-mkcert
 | `GitHub:ClientId` | GitHub OAuth App client ID | GitHub login only |
 | `GitHub:ClientSecret` | GitHub OAuth App client secret | GitHub login only |
 | `ClientAppUrl` | Frontend origin used to build password-reset links | Email features only |
+
+> **Azure deployment:** Replace `:` with `__` in environment variable names (e.g. `Cloudinary__ApiKey`, `Resend__ApiKey`).
 
 ---
 
@@ -503,7 +508,7 @@ Base path: `/api/profiles`
 
 1. Create a GitHub OAuth App at **Settings → Developer settings → OAuth Apps**.
 2. Set **Homepage URL** to `https://localhost:5173` and **Callback URL** to `https://localhost:5173/auth-callback`.
-3. Add the `ClientId` and `ClientSecret` to `appsettings.Development.json` and restart the backend.
+3. Add the `ClientId` and `ClientSecret` to `appsettings.Development.json` and restart the backend. 
 
 ---
 
@@ -518,4 +523,4 @@ This project is open source and available under the [MIT License](LICENSE).
 Built by **Tauseef Iqbal**
 
 - GitHub: [@tauseefiqbal](https://github.com/tauseefiqbal)
-- Live App: [https://jobify-mern-jwt-sc-js-bzr7.onrender.com/](https://jobify-mern-jwt-sc-js-bzr7.onrender.com/)
+- Live App: [https://reactivities-wa.azurewebsites.net](https://reactivities-wa.azurewebsites.net)
