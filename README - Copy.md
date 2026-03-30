@@ -1,19 +1,18 @@
 # Reactivities
 
-A full-stack social activity-management web application built with **ASP.NET Core 9** and **React 19** (TypeScript + Vite). Users can create, browse, attend, and comment on real-world events, manage their profiles, follow other users, and chat in real time.
+A full-stack social activities platform where users can create, browse, join, and manage real-world activities. Features real-time chat, user profiles with photo management, a follow system, and GitHub OAuth login — built with ASP.NET Core 9 and React 19.
+
+**Email Functionality Note**
+This project uses Resend for email services. At the moment, email delivery is limited by the current Resend configuration, so full production email functionality is not enabled. To support live email sending, a verified custom domain and proper API key setup are required. For testing purposes, I have currently disabled email verification for new registered users.
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
 - [Reactivities](#reactivities)
-  - [📑 Table of Contents](#-table-of-contents)
+  - [Table of Contents](#table-of-contents)
   - [✅ Features](#-features)
-    - [Activity Management](#activity-management)
-    - [Social Features](#social-features)
-    - [Account \& Authentication](#account--authentication)
-    - [System Features](#system-features)
-  - [🚀 Tech Stack](#-tech-stack)
+  - [🛠 Tech Stack](#-tech-stack)
     - [Backend](#backend)
     - [Frontend](#frontend)
   - [🌐 Deployment](#-deployment)
@@ -24,12 +23,12 @@ A full-stack social activity-management web application built with **ASP.NET Cor
     - [Getting Started](#getting-started)
     - [Browsing and Managing Activities](#browsing-and-managing-activities)
     - [Creating an Activity](#creating-an-activity)
+    - [Updating and Cancelling an Activity](#updating-and-cancelling-an-activity)
     - [Attending an Activity](#attending-an-activity)
     - [Real-Time Chat](#real-time-chat)
     - [Managing Your Profile](#managing-your-profile)
     - [Following Other Users](#following-other-users)
-    - [Photo Management](#photo-management)
-    - [Forgot Password / Reset Password](#forgot-password--reset-password)
+    - [Forgot Password / Reset](#forgot-password--reset)
   - [📋 Prerequisites](#-prerequisites)
   - [🛠️ Installation \& Setup](#️-installation--setup)
     - [1. Clone the Repository](#1-clone-the-repository)
@@ -44,6 +43,7 @@ A full-stack social activity-management web application built with **ASP.NET Cor
     - [Activities Endpoints](#activities-endpoints)
     - [Profiles Endpoints](#profiles-endpoints)
     - [SignalR Hub](#signalr-hub)
+  - [🔒 Security](#-security)
   - [🐛 Troubleshooting](#-troubleshooting)
     - [Backend Won't Start](#backend-wont-start)
     - [Frontend Can't Connect to Backend](#frontend-cant-connect-to-backend)
@@ -51,56 +51,41 @@ A full-stack social activity-management web application built with **ASP.NET Cor
     - [Password Reset Email Not Received](#password-reset-email-not-received)
     - [GitHub Login Not Working](#github-login-not-working)
   - [📄 License](#-license)
-  - [👨‍💻 Author](#-author)
 
 ---
 
 ## ✅ Features
 
-### Activity Management
-
-- ✅ Browse a paginated dashboard of activities with filters (All / Going / Hosting, by date, by category)
-- ✅ View full activity details including description, date/time, location, attendee list, and host
-- ✅ Create a new activity with title, description, category, date/time, city, venue, and map pin (via LocationIQ)
-- ✅ Edit or delete your own activities (only the host can modify)
-- ✅ Cancel and uncancel an activity without deleting it
-
-### Social Features
-
-- ✅ Join or leave any activity with a single click
-- ✅ Real-time per-activity chat powered by SignalR — messages appear instantly for all attendees
-- ✅ Follow and unfollow other users; browse their followers and following lists
-- ✅ Dedicated profile pages showing bio, photos, follower/following counts, and hosted/attended activities
-- ✅ Upload and crop a profile photo (processed to 500×500 px via Cloudinary)
-- ✅ Set any uploaded photo as your main avatar; delete photos you no longer want
-- ✅ Edit your display name and bio at any time
-
-### Account & Authentication
-
-- ✅ Register with email address, display name, and password
-- ✅ Log in with email and password
-- ✅ Log in with GitHub OAuth (one-click, no password required)
-- ✅ Sign out securely
-- ✅ Change password from your account settings
-- ✅ Forgot password — receive a reset-link email via Resend
-- ✅ Reset password using the link sent to your email
-- ✅ Email confirmation flow with verification link
-
-### System Features
-
-- ✅ Clean Architecture: API / Application / Domain / Infrastructure / Persistence layers
-- ✅ CQRS pattern with MediatR — every operation is a distinct Command or Query
-- ✅ FluentValidation pipeline behaviour for automatic input validation
-- ✅ Global exception middleware — structured JSON errors (stack trace in dev only)
-- ✅ Rate limiting middleware — 60 req/min general; 5 req/min on auth endpoints (per IP)
-- ✅ Security response headers: `X-Frame-Options`, `X-XSS-Protection`, `Content-Security-Policy`, and more
-- ✅ `IsActivityHost` authorisation policy — only the host can edit or delete their activity
-- ✅ Database auto-seeded with sample users and activities on first run
-- ✅ SPA fallback controller — serves the React frontend for all non-API routes in production
+- ✅ User registration and login with email/password
+- ✅ GitHub OAuth login (Authorization Code flow)
+- ✅ Forgot password and reset password via email
+- ✅ Change password for authenticated users
+- ✅ Create, edit and cancel activities
+- ✅ Browse activities with pagination and infinite scroll
+- ✅ Filter activities by All, Going, and Hosting
+- ✅ Filter activities by date using a calendar picker
+- ✅ Join and leave activities as an attendee
+- ✅ Real-time chat on activity pages via SignalR
+- ✅ Interactive map with pin for activity location (Leaflet + LocationIQ)
+- ✅ User profiles with bio, display name, and avatar
+- ✅ Photo upload with drag-and-drop and in-browser cropping
+- ✅ Set main profile photo / delete photos (synced with Cloudinary)
+- ✅ Follow and unfollow other users
+- ✅ Followers and following lists on profile pages
+- ✅ View user activity history (hosting, going, attended)
+- ✅ Host-only activity editing (IsActivityHost authorization policy)
+- ✅ Security headers (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy)
+- ✅ Rate limiting middleware (general + auth endpoint throttling)
+- ✅ Server-side validation with FluentValidation
+- ✅ Client-side form validation with React Hook Form + Zod
+- ✅ Global error handling middleware
+- ✅ Toast notifications for user feedback
+- ✅ Responsive Material UI design with theming
+- ✅ HTTPS in development via mkcert
 
 ---
 
-## 🚀 Tech Stack
+## 🛠 Tech Stack
 
 ### Backend
 
@@ -109,24 +94,24 @@ A full-stack social activity-management web application built with **ASP.NET Cor
 | **ASP.NET Core 9** | Web API framework |
 | **Entity Framework Core 9** | ORM and database migrations |
 | **SQL Server** | Relational database |
-| **ASP.NET Core Identity** | User management and cookie-based auth |
-| **MediatR 14** | CQRS mediator pattern |
-| **AutoMapper 16** | Object-to-object mapping |
-| **FluentValidation 12** | Input validation with pipeline behaviour |
+| **ASP.NET Identity** | Authentication, user management, password hashing |
+| **MediatR (CQRS)** | Command/Query separation |
+| **AutoMapper** | Object-to-object mapping |
+| **FluentValidation** | Request validation |
 | **SignalR** | Real-time WebSocket communication |
-| **CloudinaryDotNet** | Photo upload, crop, and storage |
-| **Resend** | Transactional email (password reset, confirmation) |
-| **Clean Architecture** | API / Application / Domain / Infrastructure / Persistence |
+| **Cloudinary SDK** | Cloud photo storage and management |
+| **Resend** | Transactional email (password reset) |
 
 ### Frontend
 
 | Technology | Purpose |
 |---|---|
-| **React 19** | UI library (TypeScript) |
+| **React 19** | UI library |
+| **TypeScript 5** | Static type checking |
 | **Vite 6** | Build tool and dev server (HTTPS via mkcert) |
 | **React Router 7** | Client-side routing |
 | **MUI Material 7** | Component library and theming |
-| **MUI X DatePickers 8** | Date & time picker components |
+| **MUI X DatePickers 8** | Date and time picker components |
 | **TanStack React Query 5** | Server state management and caching |
 | **MobX 6 + MobX React Lite** | Client-side reactive state |
 | **Axios** | HTTP client |
@@ -137,7 +122,6 @@ A full-stack social activity-management web application built with **ASP.NET Cor
 | **React Dropzone** | Drag-and-drop photo upload zone |
 | **date-fns 4** | Date formatting and manipulation |
 | **React Toastify** | Toast notifications |
-| **TypeScript 5** | Static type checking |
 
 ---
 
@@ -149,14 +133,12 @@ The application is deployed and available at:
 
 | Component | Details |
 |---|---|
-| **Platform** | Azure App Service |
 | **Live URL** | https://reactivities-wa.azurewebsites.net |
+| **Platform** | Azure App Service |
 | **Backend** | ASP.NET Core 9 — serves the API and the compiled React SPA |
-| **Database** | SQL Server (Azure SQL) |
+| **Database** | SQL Server |
 | **Photo Storage** | Cloudinary |
-| **Email** | Resend (`Resend__ApiKey` / `Resend__FromEmail` environment variables) |
-
-> **Azure config note:** Use double-underscore syntax for nested keys in environment variables (e.g. `Cloudinary__ApiKey`, `Resend__ApiKey`).
+| **Email** | Resend |
 
 ---
 
@@ -164,7 +146,7 @@ The application is deployed and available at:
 
 ### Test Users
 
-The following accounts are seeded automatically on first run. All users have the same capabilities — any user can create, host, attend, and manage activities.
+The following accounts are seeded automatically on first run. All users have the same capabilities — any user can create/host, attend, and manage activities.
 
 | Display Name | Email | Password |
 |---|---|---|
@@ -178,7 +160,7 @@ Each test user has:
 
 ### Admin User
 
-This application does not currently have a separate admin role. All authenticated users share the same set of permissions. The only privilege distinction is the **IsActivityHost** policy — when a user creates an activity, they become the host and only they can edit, delete, or cancel that activity.
+This application does not currently have a separate admin role. All authenticated users share the same set of permissions. The only privilege distinction is the **IsActivityHost** policy — when a user creates an activity, they become the host and only they can edit or cancel that activity.
 
 ---
 
@@ -186,43 +168,51 @@ This application does not currently have a separate admin role. All authenticate
 
 ### Getting Started
 
-1. Open the application — use the [live deployment](https://reactivities-wa.azurewebsites.net) or the local dev server (default: `https://localhost:5173`).
-2. Click **Login** in the nav bar and sign in with one of the test credentials above, or click **Register** to create a new account.
+1. Open the application — use the [live deployment](https://reactivities-wa.azurewebsites.net) or the local dev server (default: `https://localhost:5173`), from there, click the **TAKE ME TO THE ACTIVITIES** to take you to the login page.
+2. Enter your registered email address and password, or use any of the test accounts provided in this guide, and click the **Login** button to log in to the system, or click **Register** in the Navbar to create a new account and enter Email, Display name, Password and click the **Register** button to register your account.
 3. To sign in with GitHub, click the **GitHub** button on the login page.
-4. After logging in you are taken to the **Activity Dashboard**.
+4. After logging in, you are taken to the **Activity Dashboard**.
 
 ### Browsing and Managing Activities
 
-1. The **Activity Dashboard** shows a paginated list of upcoming activities.
-2. Use the **Filters** panel on the right to switch between **All**, **Going**, and **Hosting** views.
+1. The **Activity Dashboard** shows a list of upcoming activities. In this list, under each activity title, it's mentioned who created/hosted that activity, like this: **HOSTED BY (NAME OF A PERSON WHO CREATED/HOSTED THAT ACTIVITY)**.
+2. Use the **Filters** panel on the right to switch between **All Event**, **I'm Going**, and **I'm Hosting** views.
 3. Use the **calendar** in the filter panel to show only activities on or after a chosen date.
 4. Click **View** on any activity card to open its full detail page.
 
 ### Creating an Activity
 
-1. Click **Create Activity** in the nav bar.
-2. Fill in the title, description, category, date/time, city, and venue.
-3. Use the map component to drop a pin at the exact location (powered by LocationIQ).
-4. Click **Submit** — your activity is published and you are automatically set as the host.
+1. Click your **avatar** in the nav bar and select the **Create Activity** option.
+3. Fill in the title, description, category, **Future** date/time, and location (start typing your desired location in the location field; the location field will show a list of locations related to your type; select any location from the list).
+4. Click **Submit** — your activity will start reflecting on **Activity Dashboard**, and you will be automatically set as the host.
 
+### Updating and Cancelling an Activity
+
+1. Open any activity's detail page after clicking **View** on activity card in **Activity Dashboard**.
+2. If you are the **Host** of that Activity, you will see the **Manage Event** button to update the information for your created Activity, and you will also see the **Cancel Activity** button to cancel your Activity.
+3. Clicking **Manage Event** opens the Update Activity Form, where you can update details such as Title, Description, Category, Future Date, and Location.
+4. Clicking the **Cancel Activity** button cancels your created or hosted activity.
+   
 ### Attending an Activity
 
-1. Open any activity's detail page.
+1. Open any activity's detail page after clicking **View** on activity card in **Activity Dashboard**.
 2. Click **Join Activity** to sign up as an attendee; your avatar appears in the attendee list immediately.
 3. Click **Cancel attendance** to remove yourself from the activity.
-4. If you are the host, click **Cancel Activity** to mark it cancelled (it stays visible but greyed out), or **Re-activate** to open it again.
 
 ### Real-Time Chat
 
-1. On the activity detail page, scroll to the **Chat** panel.
-2. Type your message and press **Enter** (or click the send button).
-3. All attendees currently viewing the page see your message appear instantly — no page refresh needed.
+1. Open any activity's detail page after clicking **View** on activity card in **Activity Dashboard**, scroll to the **Chat** panel.
+3. Type your message and press **Enter** (or click the send button).
+5. All attendees currently viewing the page see your message appear instantly — no page refresh needed.
 
 ### Managing Your Profile
 
-1. Click your **avatar** in the nav bar and select your display name to open your profile page.
+1. Click your **avatar** in the nav bar and select the **My profile** option.
 2. The **About** tab shows your bio — click **Edit Profile** to update your display name or bio.
-3. The **Activities** tab lists activities you are **Hosting**, **Going to**, or have **Attended** in the past.
+3. The **Photos** tab allows you to set a photo as your profile avatar across the app.
+   Click **Add Photo**, drag and drop (or browse) an image file, crop it in the editor, then click **Upload**. 
+   Click the **delete** icon on a photo to permanently remove it (also deleted from Cloudinary).
+4. The **Event/Activity** tab shows the most recent **Future Events/Activities**, **Past Events/Activities**, and **Hosting**. 
 
 ### Following Other Users
 
@@ -230,21 +220,14 @@ This application does not currently have a separate admin role. All authenticate
 2. Click **Follow** to follow them; click **Unfollow** to stop following.
 3. The **Followers** and **Following** tabs on any profile page show the complete follow graph for that user.
 
-### Photo Management
+### Forgot Password / Reset
 
-1. Go to your own profile page and open the **Photos** tab.
-2. Click **Add Photo**, drag and drop (or browse) an image file, crop it in the editor, then click **Upload**.
-3. Click **Main** on any uploaded photo to set it as your profile avatar across the app.
-4. Click the **delete** icon on a photo to permanently remove it (also deleted from Cloudinary).
-
-### Forgot Password / Reset Password
-
-1. On the **Login** page click **Forgot password?**.
+1. On the **Login** page, click **Forgot password?**.
 2. Enter your registered email address and click **Send reset email**.
-3. Check your inbox (and spam/junk folder) for an email containing a reset link.
+3. Check your inbox and spam/junk folder for an email containing a reset password link.
 4. Click the link — it opens the **Reset Password** page with your email and reset code pre-filled.
 5. Enter your new password and confirm it, then click **Reset Password**.
-
+ 
 ---
 
 ## 📋 Prerequisites
@@ -298,7 +281,13 @@ Open `API/appsettings.Development.json` and configure:
   "ConnectionStrings": {
     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=Reactivities;Trusted_Connection=True;"
   },
-  "Cloudinary": {
+  "Authentication": {
+    "GitHub": {
+      "ClientId": "YOUR_GITHUB_CLIENT_ID",
+      "ClientSecret": "YOUR_GITHUB_CLIENT_SECRET"
+    }
+  },
+  "CloudinarySettings": {
     "CloudName": "YOUR_CLOUD_NAME",
     "ApiKey": "YOUR_API_KEY",
     "ApiSecret": "YOUR_API_SECRET"
@@ -307,15 +296,11 @@ Open `API/appsettings.Development.json` and configure:
     "ApiKey": "YOUR_RESEND_API_KEY",
     "FromEmail": "onboarding@resend.dev"
   },
-  "GitHub": {
-    "ClientId": "YOUR_GITHUB_CLIENT_ID",
-    "ClientSecret": "YOUR_GITHUB_CLIENT_SECRET"
-  },
   "ClientAppUrl": "https://localhost:5173"
 }
 ```
 
-> `GitHub`, `Cloudinary`, and `Resend` sections are optional for basic local testing. The app starts without them, but the corresponding features will be unavailable.
+> `Authentication:GitHub`, `CloudinarySettings`, and `Resend` sections are optional for basic local testing. The app starts without them, but the corresponding features will be unavailable.
 
 ### 4. Run the Backend
 
@@ -344,17 +329,15 @@ The dev server starts on `https://localhost:5173` (HTTPS via `vite-plugin-mkcert
 
 | Key | Description | Required |
 |---|---|---|
-| `ConnectionStrings:DefaultConnection` | SQL Server connection string | ✅ Yes |
-| `Cloudinary:CloudName` | Cloudinary cloud name | Photo upload only |
-| `Cloudinary:ApiKey` | Cloudinary API key | Photo upload only |
-| `Cloudinary:ApiSecret` | Cloudinary API secret | Photo upload only |
+| `ConnectionStrings:DefaultConnection` | SQL Server connection string | Yes |
+| `Authentication:GitHub:ClientId` | GitHub OAuth App client ID | GitHub login only |
+| `Authentication:GitHub:ClientSecret` | GitHub OAuth App client secret | GitHub login only |
+| `CloudinarySettings:CloudName` | Cloudinary cloud name | Photo upload only |
+| `CloudinarySettings:ApiKey` | Cloudinary API key | Photo upload only |
+| `CloudinarySettings:ApiSecret` | Cloudinary API secret | Photo upload only |
 | `Resend:ApiKey` | Resend API key for transactional email | Email features only |
 | `Resend:FromEmail` | Sender address (`onboarding@resend.dev` on free tier) | Email features only |
-| `GitHub:ClientId` | GitHub OAuth App client ID | GitHub login only |
-| `GitHub:ClientSecret` | GitHub OAuth App client secret | GitHub login only |
-| `ClientAppUrl` | Frontend origin used to build password-reset links | Email features only |
-
-> **Azure deployment:** Replace `:` with `__` in environment variable names (e.g. `Cloudinary__ApiKey`, `Resend__ApiKey`).
+| `ClientAppUrl` | Frontend origin used to build OAuth redirect and password-reset links | Yes |
 
 ---
 
@@ -478,6 +461,18 @@ Base path: `/api/profiles`
 
 ---
 
+## 🔒 Security
+
+- **Security headers** — CSP, X-Frame-Options (DENY), X-Content-Type-Options (nosniff), X-XSS-Protection, Referrer-Policy
+- **Rate limiting** — 60 requests/minute per IP for general endpoints; 5 requests/minute per IP for auth endpoints (login/register)
+- **CORS** — restricted to specific localhost origins in development
+- **Authentication** — cookie-based sessions via ASP.NET Identity
+- **Authorization** — global `RequireAuthenticatedUser` policy; host-only editing via `IsActivityHost` policy
+- **Password hashing** — handled by ASP.NET Identity (PBKDF2)
+- **Input validation** — server-side FluentValidation + client-side Zod schemas
+
+---
+
 ## 🐛 Troubleshooting
 
 ### Backend Won't Start
@@ -494,7 +489,7 @@ Base path: `/api/profiles`
 
 ### Photos Not Uploading
 
-- Verify `Cloudinary:CloudName`, `ApiKey`, and `ApiSecret` are set correctly in `appsettings.Development.json`.
+- Verify `CloudinarySettings:CloudName`, `ApiKey`, and `ApiSecret` are set correctly in `appsettings.Development.json`.
 - Restart the backend after updating the config file.
 
 ### Password Reset Email Not Received
@@ -508,19 +503,11 @@ Base path: `/api/profiles`
 
 1. Create a GitHub OAuth App at **Settings → Developer settings → OAuth Apps**.
 2. Set **Homepage URL** to `https://localhost:5173` and **Callback URL** to `https://localhost:5173/auth-callback`.
-3. Add the `ClientId` and `ClientSecret` to `appsettings.Development.json` and restart the backend. 
+3. Add the `ClientId` and `ClientSecret` to `appsettings.Development.json` under `Authentication:GitHub` and restart the backend.
+4. Ensure the `ClientAppUrl` in `appsettings.Development.json` is set to `https://localhost:5173`.
 
 ---
 
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
-
----
-
-## 👨‍💻 Author
-
-Built by **Tauseef Iqbal**
-
-- GitHub: [@tauseefiqbal](https://github.com/tauseefiqbal)
-- Live App: [https://reactivities-wa.azurewebsites.net](https://reactivities-wa.azurewebsites.net)
