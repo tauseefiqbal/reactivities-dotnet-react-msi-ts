@@ -25,7 +25,29 @@ builder.Services.AddControllers(opt =>
 });
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // Connection string resolution order:
+    // 1. ConnectionStrings:DefaultConnection (appsettings or Azure App Service "Connection strings" / env var ConnectionStrings__DefaultConnection)
+    // 2. DATABASE_URL env var (Neon-style URI, e.g. postgresql://user:pass@host/db?sslmode=require)
+    var connStr = builder.Configuration.GetConnectionString("DefaultConnection")
+                  ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+
+    if (!string.IsNullOrWhiteSpace(connStr) && connStr.StartsWith("postgres", StringComparison.OrdinalIgnoreCase)
+        && Uri.TryCreate(connStr, UriKind.Absolute, out var uri))
+    {
+        var userInfo = uri.UserInfo.Split(':', 2);
+        var csb = new Npgsql.NpgsqlConnectionStringBuilder
+        {
+            Host = uri.Host,
+            Port = uri.Port > 0 ? uri.Port : 5432,
+            Username = Uri.UnescapeDataString(userInfo[0]),
+            Password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : string.Empty,
+            Database = uri.AbsolutePath.TrimStart('/'),
+            SslMode = Npgsql.SslMode.Require
+        };
+        connStr = csb.ConnectionString;
+    }
+
+    opt.UseNpgsql(connStr);
 });
 builder.Services.AddCors();
 builder.Services.AddSignalR();
@@ -91,7 +113,9 @@ app.UseCors(x => x
                  "http://localhost:3002", "https://localhost:3002",
                  "http://localhost:3003", "https://localhost:3003",
                  "http://localhost:5173", "https://localhost:5173",
-                 "http://localhost:5174", "https://localhost:5174")
+                 "http://localhost:5174", "https://localhost:5174",
+                 "http://127.0.0.1:5173", "https://127.0.0.1:5173",
+                 "http://127.0.0.1:5174", "https://127.0.0.1:5174")
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials());
